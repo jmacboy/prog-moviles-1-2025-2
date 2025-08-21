@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -18,6 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.practicacalculadora.ui.theme.PracticaCalculadoraTheme
+import kotlin.div
+import kotlin.times
 
 @Composable
 fun Calculator(modifier: Modifier = Modifier) {
@@ -38,207 +41,238 @@ fun Calculator(modifier: Modifier = Modifier) {
                     .padding(8.dp)
             )
         }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            TextButton(
-                text = "1",
-                onClick = {
-                    result = result + "1"
-                },
-                modifier = Modifier
-                    .weight(1f),
-            )
-            TextButton(
-                text = "2",
-                onClick = {
-                    result = result + "2"
-
-                },
-                modifier = Modifier
-                    .weight(1f),
-            )
-            TextButton(
-                text = "3",
-                onClick = {
-                    result = result + "3"
-
-                },
-                modifier = Modifier
-                    .weight(1f),
-            )
-        }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            TextButton(
-                text = "4",
-                onClick = {
-                    result = result + "4"
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-            TextButton(
-                text = "5",
-                onClick = {
-                    result = result + "5"
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-            TextButton(
-                text = "6",
-                onClick = {
-                    result = result + "6"
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-        }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            TextButton(
-                text = "7",
-                onClick = {
-                    result = result + "7"
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-            TextButton(
-                text = "8",
-                onClick = {
-                    result = result + "8"
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-            TextButton(
-                text = "9",
-                onClick = {
-                    result = result + "9"
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-        }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            TextButton(
-                text = "0",
-                onClick = {
-                    result = result + "0"
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-
-        }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            TextButton(
-                text = "+",
-                onClick = {
-                    if (result.isNotEmpty()) {
-                        prevNumber = result.toInt()
-                        result = ""
-                        currentOperation = "+"
-                    }
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-            TextButton(
-                text = "-",
-                onClick = {
-                    if (result.isNotEmpty()) {
-                        prevNumber = result.toInt()
-                        result = ""
-                        currentOperation = "-"
-
-                    }
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-            TextButton(
-                text = "x",
-                onClick = {
-                    if (result.isNotEmpty()) {
-                        prevNumber = result.toInt()
-                        result = ""
-                        currentOperation = "x"
-
-                    }
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-            TextButton(
-                text = "/",
-                onClick = {
-                    if (result.isNotEmpty()) {
-                        prevNumber = result.toInt()
-                        result = ""
-                        currentOperation = "/"
-                    }
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-        }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            TextButton(
-                text = "=",
-                onClick = {
-                    val currentNumber = result.toIntOrNull() ?: 0
-                    var operationResult = 0
-                    when (currentOperation) {
-                        "+" -> operationResult = prevNumber + currentNumber
-                        "-" -> operationResult = prevNumber - currentNumber
-                        "x" -> operationResult = prevNumber * currentNumber
-                        "/" -> {
-                            if (currentNumber != 0) {
-                                operationResult = prevNumber / currentNumber
-                            } else {
-                                operationResult = 0 // Avoid division by zero
-                            }
+        NumberPanel(
+            onNumberClick = { num ->
+                result += num
+            }
+        )
+        OperationsPanel(
+            selectOperationType = { theOperation ->
+                if (result.isNotEmpty()) {
+                    prevNumber = result.toInt()
+                    result = ""
+                    currentOperation = theOperation
+                }
+            },
+            onEqualsClick = {
+                val currentNumber = result.toIntOrNull() ?: 0
+                var operationResult = 0
+                when (currentOperation) {
+                    "+" -> operationResult = prevNumber + currentNumber
+                    "-" -> operationResult = prevNumber - currentNumber
+                    "x" -> operationResult = prevNumber * currentNumber
+                    "/" -> {
+                        if (currentNumber != 0) {
+                            operationResult = prevNumber / currentNumber
+                        } else {
+                            operationResult = 0 // Avoid division by zero
                         }
                     }
-                    result = operationResult.toString()
-                    currentOperation = ""
-                    prevNumber = 0
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-        }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            TextButton(
-                text = "C",
-                onClick = {
-                    result = result.substring(0, result.length - 1)
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-            TextButton(
-                text = "CE",
-                onClick = {
-                    result = ""
-                },
-                modifier = Modifier
-                    .weight(1f)
-            )
-        }
+                }
+                result = operationResult.toString()
+                currentOperation = ""
+                prevNumber = 0
+            }
+        )
+        ClearOperationsPanel(
+            onClearOneClick = {
+                result = result.substring(0, result.length - 1)
+            },
+            onClearAllClick = {
+                result = ""
+            }
+        )
+    }
+}
+
+@Composable
+fun ClearOperationsPanel(
+    onClearOneClick: () -> Unit = {},
+    onClearAllClick: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        TextButton(
+            text = "C",
+            onClick = {
+                onClearOneClick()
+            },
+            modifier = Modifier
+                .weight(1f)
+        )
+        TextButton(
+            text = "CE",
+            onClick = {
+                onClearAllClick()
+            },
+            modifier = Modifier
+                .weight(1f)
+        )
+    }
+}
+
+@Composable
+fun OperationsPanel(
+    selectOperationType: (operation: String) -> Unit,
+    onEqualsClick: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        TextButton(
+            text = "+",
+            onClick = {
+                selectOperationType("+")
+            },
+            modifier = Modifier
+                .weight(1f)
+        )
+        TextButton(
+            text = "-",
+            onClick = {
+                selectOperationType("-")
+            },
+            modifier = Modifier
+                .weight(1f)
+        )
+        TextButton(
+            text = "x",
+            onClick = {
+                selectOperationType("x")
+            },
+            modifier = Modifier
+                .weight(1f)
+        )
+        TextButton(
+            text = "/",
+            onClick = {
+                selectOperationType("/")
+            },
+            modifier = Modifier
+                .weight(1f)
+        )
+    }
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        TextButton(
+            text = "=",
+            onClick = {
+                onEqualsClick()
+            },
+            modifier = Modifier
+                .weight(1f)
+        )
+    }
+}
+
+@Composable
+fun NumberPanel(
+    onNumberClick: (num: String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        TextButton(
+            text = "1",
+            onClick = {
+                onNumberClick("1")
+            },
+            modifier = Modifier
+                .weight(1f),
+        )
+        TextButton(
+            text = "2",
+            onClick = {
+                onNumberClick("2")
+
+            },
+            modifier = Modifier
+                .weight(1f),
+        )
+        TextButton(
+            text = "3",
+            onClick = {
+                onNumberClick("3")
+
+            },
+            modifier = Modifier
+                .weight(1f),
+        )
+    }
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        TextButton(
+            text = "4",
+            onClick = {
+                onNumberClick("4")
+            },
+            modifier = Modifier
+                .weight(1f)
+        )
+        TextButton(
+            text = "5",
+            onClick = {
+                onNumberClick("5")
+            },
+            modifier = Modifier
+                .weight(1f)
+        )
+        TextButton(
+            text = "6",
+            onClick = {
+                onNumberClick("6")
+            },
+            modifier = Modifier
+                .weight(1f)
+        )
+    }
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        TextButton(
+            text = "7",
+            onClick = {
+                onNumberClick("7")
+            },
+            modifier = Modifier
+                .weight(1f)
+        )
+        TextButton(
+            text = "8",
+            onClick = {
+                onNumberClick("8")
+            },
+            modifier = Modifier
+                .weight(1f)
+        )
+        TextButton(
+            text = "9",
+            onClick = {
+                onNumberClick("9")
+            },
+            modifier = Modifier
+                .weight(1f)
+        )
+    }
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        TextButton(
+            text = "0",
+            onClick = {
+                onNumberClick("0")
+            },
+            modifier = Modifier
+                .weight(1f)
+        )
+
     }
 }
 
@@ -255,6 +289,36 @@ fun TextButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier)
     }
 }
 
+@Preview
+@Composable
+fun ClearOperationsPanelPreview() {
+    PracticaCalculadoraTheme {
+        Column {
+            ClearOperationsPanel(onClearOneClick = {}, onClearAllClick = {})
+        }
+    }
+}
+
+@Preview
+@Composable
+fun OperationsPanelPreview() {
+    PracticaCalculadoraTheme {
+        Column {
+            OperationsPanel(selectOperationType = {}, onEqualsClick = {})
+        }
+    }
+}
+
+
+@Preview
+@Composable
+fun NumberPanelPreview() {
+    PracticaCalculadoraTheme {
+        Column {
+            NumberPanel(onNumberClick = {})
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
