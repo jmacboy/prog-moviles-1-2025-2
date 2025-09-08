@@ -6,19 +6,27 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,7 +46,8 @@ class MainActivity : ComponentActivity() {
                     floatingActionButton = {
                         ActionButtons()
                     },
-                    modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    modifier = Modifier.fillMaxSize()
+                ) { innerPadding ->
                     PersonList(
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -61,52 +70,77 @@ fun ActionButtons() {
 
 @Composable
 fun PersonList(modifier: Modifier = Modifier) {
-    var people = PersonRepository.getPeople()
+    val people = remember { mutableStateListOf(*PersonRepository.getPeople().toTypedArray()) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
     when (lifecycleState) {
         androidx.lifecycle.Lifecycle.State.RESUMED -> {
-            people = PersonRepository.getPeople()
+            people.clear()
+            people.addAll(PersonRepository.getPeople())
         }
+
         else -> {
             // No hacer nada
         }
     }
 
-
+    if (people.isEmpty()) {
+        Text(
+            text = "No hay personas registradas",
+            modifier = modifier.padding(16.dp)
+        )
+        return
+    }
     LazyColumn(modifier = modifier.padding(16.dp)) {
         items(people) { person ->
-            PersonItem(person)
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp)
+            PersonItem(person = person, onPersonDeleted = {
+                people.clear()
+                people.addAll(PersonRepository.getPeople())
+            })
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+        }
+    }
+}
+
+@Composable
+fun PersonItem(person: Person, onPersonDeleted: (() -> Unit)) {
+    val context = LocalContext.current
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                val intent = Intent(context, PersonDetailActivity::class.java)
+                intent.putExtra("person", person)
+                context.startActivity(intent)
+            }
+    ) {
+        Column(
+
+        ) {
+            Text(person.name + " " + person.lastName)
+            Text(person.phone)
+        }
+        Button(
+            onClick = {
+                PersonRepository.deletePerson(person)
+                onPersonDeleted()
+            },
+            modifier = Modifier.padding(start = 8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = "Delete"
             )
         }
     }
 }
 
-@Composable
-fun PersonItem(person: Person) {
-    val context = LocalContext.current
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-            val intent = Intent(context, PersonDetailActivity::class.java)
-            intent.putExtra("person", person)
-            context.startActivity(intent)
-        }
-    ) {
-        Text(person.name + " " + person.lastName)
-        Text(person.phone)
-    }
-}
-
-
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun PersonListPreview() {
     PracticaListaCompletaTheme {
         PersonList()
     }

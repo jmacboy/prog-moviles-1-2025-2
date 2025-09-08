@@ -43,4 +43,8 @@ object PersonRepository {
         people.add(person)
     }
 
+    fun deletePerson(person: Person) {
+        people.removeIf { it.id == person.id }
+    }
+
 }

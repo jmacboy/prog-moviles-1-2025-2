@@ -1,8 +1,10 @@
 package com.example.practicalistacompleta.ui.activities
 
+import android.R.attr.visibility
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -105,6 +107,19 @@ fun PersonForm(
                 .fillMaxWidth()
         ) {
             Text("Guardar")
+        }
+        if (person.id != 0) {
+            Button(
+                onClick = {
+                    PersonRepository.deletePerson(person)
+                    activity?.finish()
+                },
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxWidth()
+            ) {
+                Text("Eliminar")
+            }
         }
         Button(
             onClick = {
