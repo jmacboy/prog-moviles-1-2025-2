@@ -1,4 +1,4 @@
-package com.example.practicalistacompleta
+package com.example.practicalistacompleta.ui.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -15,10 +15,16 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.practicalistacompleta.models.Person
+import com.example.practicalistacompleta.repositories.PersonRepository
 import com.example.practicalistacompleta.ui.theme.PracticaListaCompletaTheme
 
 class PersonDetailActivity : ComponentActivity() {
@@ -46,39 +52,54 @@ fun PersonForm(
     modifier: Modifier = Modifier
 ) {
     val activity = (LocalContext.current as? Activity)
+    var personName by remember { mutableStateOf(person.name) }
+    var personLastName by remember { mutableStateOf(person.lastName) }
+    var personPhone by remember { mutableStateOf(person.phone) }
+    var personAddress by remember { mutableStateOf(person.address) }
     Column(
         modifier = modifier.padding(16.dp)
     ) {
         OutlinedTextField(
-            value = person.name,
-            onValueChange = {},
+            value = personName,
+            onValueChange = {
+                personName = it
+            },
             label = { Text("Nombre") },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
-            value = person.lastName,
-            onValueChange = {},
+            value = personLastName,
+            onValueChange = {
+                personLastName = it
+            },
             label = { Text("Apellido") },
             modifier = Modifier.fillMaxWidth()
 
         )
         OutlinedTextField(
-            value = person.phone,
-            onValueChange = {},
+            value = personPhone,
+            onValueChange = {
+                personPhone = it
+            },
             label = { Text("Teléfono") },
             modifier = Modifier.fillMaxWidth()
 
         )
         OutlinedTextField(
-            value = person.address,
-            onValueChange = {},
+            value = personAddress,
+            onValueChange = {
+                personAddress = it
+            },
             label = { Text("Dirección") },
             maxLines = 4,
             minLines = 2,
             modifier = Modifier.fillMaxWidth()
         )
         Button(
-            onClick = { /* Guardar cambios */ },
+            onClick = {
+                savePerson(person, personName, personLastName, personPhone, personAddress)
+                activity?.finish()
+            },
             modifier = Modifier
                 .padding(top = 16.dp)
                 .fillMaxWidth()
@@ -95,6 +116,24 @@ fun PersonForm(
         ) {
             Text("Cancelar")
         }
+    }
+}
+
+fun savePerson(
+    person: Person,
+    personName: String,
+    personLastName: String,
+    personPhone: String,
+    personAddress: String
+) {
+    person.name = personName
+    person.lastName = personLastName
+    person.phone = personPhone
+    person.address = personAddress
+    if (person.id != 0) {
+        PersonRepository.updatePerson(person)
+    } else {
+        PersonRepository.createPerson(person)
     }
 }
 

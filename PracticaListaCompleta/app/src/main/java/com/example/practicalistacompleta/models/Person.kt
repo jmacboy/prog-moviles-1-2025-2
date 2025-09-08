@@ -1,7 +1,6 @@
-package com.example.practicalistacompleta
+package com.example.practicalistacompleta.models
 
 import java.io.Serializable
-
 
 class Person(
     var id: Int,
