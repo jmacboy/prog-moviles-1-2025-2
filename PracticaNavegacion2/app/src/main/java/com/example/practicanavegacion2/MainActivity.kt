@@ -1,0 +1,90 @@
+package com.example.practicanavegacion2
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.practicanavegacion2.ui.theme.PracticaNavegacion2Theme
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            PracticaNavegacion2Theme {
+                NavigationApp()
+
+            }
+        }
+    }
+}
+
+@Composable
+fun NavigationApp(navController: NavHostController = rememberNavController()) {
+    NavHost(
+        navController = navController,
+        startDestination = NavScreens.HOME.name
+    ) {
+        composable(NavScreens.HOME.name) {
+            HomeScreen(modifier = Modifier, navController)
+        }
+        composable(NavScreens.DETAIL.name) {
+            DetailScreen()
+        }
+    }
+}
+
+@Composable
+fun DetailScreen(modifier: Modifier = Modifier) {
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        Text(
+            "Detail screen",
+            modifier = modifier.padding(innerPadding)
+        )
+    }
+}
+
+@Composable
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    navConroller: NavController = rememberNavController()
+) {
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        Column {
+            Text(
+                "Home screen",
+                modifier = modifier.padding(innerPadding)
+            )
+            Button(
+                onClick = {
+                    navConroller.navigate(NavScreens.DETAIL.name)
+                }
+            ) {
+                Text("Ir a la pantalla de detalle")
+            }
+        }
+    }
+
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    PracticaNavegacion2Theme {
+        HomeScreen()
+    }
+}
