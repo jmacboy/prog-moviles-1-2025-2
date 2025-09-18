@@ -18,6 +18,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.practicanavegacion2.screens.DetailScreen
+import com.example.practicanavegacion2.screens.FormScreen
+import com.example.practicanavegacion2.screens.HomeScreen
+import com.example.practicanavegacion2.screens.SplashScreen
 import com.example.practicanavegacion2.ui.theme.PracticaNavegacion2Theme
 
 class MainActivity : ComponentActivity() {
@@ -37,7 +41,7 @@ class MainActivity : ComponentActivity() {
 fun NavigationApp(navController: NavHostController = rememberNavController()) {
     NavHost(
         navController = navController,
-        startDestination = NavScreens.HOME.name
+        startDestination = NavScreens.SPLASH.name
     ) {
         composable(NavScreens.HOME.name) {
             HomeScreen(modifier = Modifier, navController)
@@ -45,46 +49,14 @@ fun NavigationApp(navController: NavHostController = rememberNavController()) {
         composable(NavScreens.DETAIL.name) {
             DetailScreen()
         }
-    }
-}
-
-@Composable
-fun DetailScreen(modifier: Modifier = Modifier) {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        Text(
-            "Detail screen",
-            modifier = modifier.padding(innerPadding)
-        )
-    }
-}
-
-@Composable
-fun HomeScreen(
-    modifier: Modifier = Modifier,
-    navConroller: NavController = rememberNavController()
-) {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        Column {
-            Text(
-                "Home screen",
-                modifier = modifier.padding(innerPadding)
-            )
-            Button(
-                onClick = {
-                    navConroller.navigate(NavScreens.DETAIL.name)
-                }
-            ) {
-                Text("Ir a la pantalla de detalle")
-            }
+        composable(NavScreens.FORM.name) {
+            FormScreen(navController)
+        }
+        composable(NavScreens.SPLASH.name) {
+            SplashScreen(navController)
         }
     }
-
 }
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    PracticaNavegacion2Theme {
-        HomeScreen()
-    }
-}
+
+
