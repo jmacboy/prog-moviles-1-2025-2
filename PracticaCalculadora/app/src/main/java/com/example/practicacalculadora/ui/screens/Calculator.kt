@@ -6,34 +6,29 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.unit.sp
 import com.example.practicacalculadora.ui.theme.PracticaCalculadoraTheme
-import kotlin.div
-import kotlin.times
+import com.example.practicacalculadora.viewmodels.CalculatorViewModel
 
 @Composable
-fun Calculator(modifier: Modifier = Modifier) {
-    var result by remember { mutableStateOf("") }
-    var prevNumber by remember { mutableIntStateOf(0) }
-    var currentOperation by remember { mutableStateOf("") }
+fun Calculator(
+    modifier: Modifier = Modifier,
+    vm: CalculatorViewModel = viewModel(),
+) {
+
     Column(
         modifier = modifier
             .padding(8.dp)
     ) {
         Row {
             Text(
-                text = result.ifEmpty { "0" },
+                text = vm.result.value.ifEmpty { "0" },
                 fontSize = 24.sp,
                 textAlign = TextAlign.End,
                 modifier = Modifier
@@ -43,43 +38,23 @@ fun Calculator(modifier: Modifier = Modifier) {
         }
         NumberPanel(
             onNumberClick = { num ->
-                result += num
+                vm.addNumber(num)
             }
         )
         OperationsPanel(
             selectOperationType = { theOperation ->
-                if (result.isNotEmpty()) {
-                    prevNumber = result.toInt()
-                    result = ""
-                    currentOperation = theOperation
-                }
+              vm.selectOperation(theOperation)
             },
             onEqualsClick = {
-                val currentNumber = result.toIntOrNull() ?: 0
-                var operationResult = 0
-                when (currentOperation) {
-                    "+" -> operationResult = prevNumber + currentNumber
-                    "-" -> operationResult = prevNumber - currentNumber
-                    "x" -> operationResult = prevNumber * currentNumber
-                    "/" -> {
-                        if (currentNumber != 0) {
-                            operationResult = prevNumber / currentNumber
-                        } else {
-                            operationResult = 0 // Avoid division by zero
-                        }
-                    }
-                }
-                result = operationResult.toString()
-                currentOperation = ""
-                prevNumber = 0
+                vm.performOperation()
             }
         )
         ClearOperationsPanel(
             onClearOneClick = {
-                result = result.substring(0, result.length - 1)
+             vm.clearOne()
             },
             onClearAllClick = {
-                result = ""
+                vm.clearAll()
             }
         )
     }
