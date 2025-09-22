@@ -1,4 +1,4 @@
-package com.example.practicanavegacion2
+package com.example.practicaviewmodels
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,18 +10,19 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.practicanavegacion2.screens.DetailScreen
-import com.example.practicanavegacion2.screens.FormScreen
-import com.example.practicanavegacion2.screens.HomeScreen
-import com.example.practicanavegacion2.screens.SplashScreen
-import com.example.practicanavegacion2.ui.theme.PracticaNavegacion2Theme
+import com.example.practicaviewmodels.ui.screens.DetailScreen
+import com.example.practicaviewmodels.ui.screens.FormScreen
+import com.example.practicaviewmodels.ui.screens.HomeScreen
+import com.example.practicaviewmodels.ui.screens.SplashScreen
+import com.example.practicaviewmodels.ui.screens.NavScreens
+import com.example.practicaviewmodels.ui.theme.PracticaViewmodelsTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            PracticaNavegacion2Theme {
+            PracticaViewmodelsTheme {
                 NavigationApp()
 
             }
