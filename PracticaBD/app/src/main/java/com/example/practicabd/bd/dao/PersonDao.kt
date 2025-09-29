@@ -1,6 +1,7 @@
 package com.example.practicabd.bd.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.practicabd.bd.entities.Person
@@ -12,4 +13,7 @@ interface PersonDao {
 
     @Insert
     fun insertPerson(person: Person): Long
+
+    @Delete
+    fun deletePerson(person: Person)
 }
