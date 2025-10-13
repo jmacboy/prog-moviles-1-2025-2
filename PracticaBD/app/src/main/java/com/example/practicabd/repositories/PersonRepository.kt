@@ -1,29 +1,44 @@
 package com.example.practicabd.repositories
 
 import android.content.Context
-import androidx.room.Room
 import com.example.practicabd.bd.AppDatabase
 import com.example.practicabd.bd.entities.Person
 
-object PersonRepository {
-    fun getAllPeople(context: Context): List<Person> {
+class PersonRepository(
+    private val context: Context
+) {
+    fun getAllPeople(): List<Person> {
         return AppDatabase
             .getInstance(context)
             .personDao()
             .getAllPeople()
     }
 
-    fun insertPerson(context: Context, person: Person): Long {
+    fun getPersonById(id: Int): Person? {
+        return AppDatabase
+            .getInstance(context)
+            .personDao()
+            .getPersonById(id)
+    }
+
+    fun insertPerson(person: Person): Long {
         return AppDatabase
             .getInstance(context)
             .personDao()
             .insertPerson(person)
     }
 
-    fun deletePerson(context: Context, person: Person) {
+    fun deletePerson(person: Person) {
         AppDatabase
             .getInstance(context)
             .personDao()
             .deletePerson(person)
+    }
+
+    fun updatePerson(person: Person) {
+        AppDatabase
+            .getInstance(context)
+            .personDao()
+            .updatePerson(person)
     }
 }

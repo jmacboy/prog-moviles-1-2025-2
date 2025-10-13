@@ -28,15 +28,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.practicabd.bd.entities.Person
+import com.example.practicabd.repositories.PersonRepository
 import com.example.practicabd.ui.theme.PracticaBDTheme
 import com.example.practicabd.ui.viewmodels.HomeViewModel
 
 @Composable
 fun HomeScreen(
     navController: NavHostController = rememberNavController(),
-    vm: HomeViewModel = viewModel()
+    vm: HomeViewModel = HomeViewModel(
+        PersonRepository(LocalContext.current)
+    )
 ) {
-    val context = LocalContext.current
     val items by vm.people.collectAsState()
     Scaffold(
         floatingActionButton = {
@@ -51,7 +53,7 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         LaunchedEffect(Unit) {
-            vm.loadPeople(context)
+            vm.loadPeople()
         }
         LazyColumn(
             modifier = Modifier
@@ -73,14 +75,13 @@ fun PersonItem(
     vm: HomeViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
-    val context = LocalContext.current
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp)
             .clickable {
-                navController.navigate(NavScreens.DETAIL.name)
+                navController.navigate(NavScreens.DETAIL.name + "/${person.id}")
             }
     ) {
         Text(
@@ -88,7 +89,7 @@ fun PersonItem(
         )
         Button(
             onClick = {
-                vm.deletePerson(context, person)
+                vm.deletePerson(person)
             }
         ) {
             Icon(

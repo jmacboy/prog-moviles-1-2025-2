@@ -15,15 +15,19 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.practicabd.repositories.PersonRepository
 import com.example.practicabd.ui.theme.PracticaBDTheme
 import com.example.practicabd.ui.viewmodels.DetailViewModel
 
 @Composable
 fun DetailScreen(
     navController: NavHostController = rememberNavController(),
-    vm: DetailViewModel = viewModel()
+    personId: Int? = null,
+    vm: DetailViewModel = DetailViewModel(
+        personId,
+        repo = PersonRepository(LocalContext.current)
+    )
 ) {
-    val context = LocalContext.current
     Scaffold { innerPadding ->
         Column(
             modifier = Modifier
@@ -72,7 +76,7 @@ fun DetailScreen(
             )
             Button(
                 onClick = {
-                    vm.savePerson(context)
+                    vm.savePerson()
                     navController.popBackStack()
                 },
                 modifier = Modifier
