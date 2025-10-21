@@ -20,6 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.practicaretrofit.presentation.PostDetailScreen
 import com.example.practicaretrofit.presentation.PostListScreen
 import com.example.practicaretrofit.presentation.PostViewModel
 import com.example.practicaretrofit.ui.theme.PracticaRetrofitTheme
@@ -30,41 +36,36 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
             PracticaRetrofitTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)) {
-                        val viewModel: PostViewModel = viewModel()
-                        val list by viewModel.list.collectAsState()
-                        val isLoading by viewModel.isLoading.collectAsState()
-                        val errorText by viewModel.error.collectAsState()
+                // A surface container using the 'background' color from the theme.
+                val navController = rememberNavController()
 
-                        PostListScreen(
-                            list = list,
-                            isLoading = isLoading,
-                            onRefresh = {
-                                viewModel.fetchPosts()
-                            })
-
-                        if (errorText != null) {
-                            AlertDialog(onDismissRequest = {}, confirmButton = {
-                                Text(
-                                    "OK", modifier = Modifier
-                                        .padding(8.dp)
-                                        .clickable {
-                                            viewModel.dismissError()
-                                        })
-                            }, title = {
-                                Text("Error")
-                            }, text = {
-                                Text(errorText ?: "Unknown error")
-                            })
-
-                        }
-
+                NavHost(
+                    navController = navController,
+                    startDestination = "PostListScreen"
+                ) {
+                    composable("PostListScreen") {
+                        PostListScreen(onItemTap = { postUI ->
+                            val id = postUI.id
+                            navController.navigate("postDetail/$id")
+                        })
                     }
 
+                    composable(
+                        "postDetail/{postId}",
+                        arguments = listOf(navArgument("postId") { type = NavType.IntType })
+                    ) { back ->
+                        val postId = back.arguments?.getInt("postId") ?: -1
+                        PostDetailScreen(postId, onBack =  {
+                            navController.popBackStack()
+                        })
+                    }
                 }
+
             }
+
+
         }
     }
 
