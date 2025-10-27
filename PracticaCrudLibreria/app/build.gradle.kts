@@ -70,4 +70,8 @@ dependencies {
     //navigation compose
     implementation("androidx.navigation:navigation-compose:2.9.5")
 
+
+    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
+
 }
