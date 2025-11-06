@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -15,20 +16,28 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PracticaMapas">
         <activity
-            android:name=".MainActivity"
+            android:name=".LocationActivity"
             android:exported="true"
-            android:label="@string/app_name"
+            android:label="@string/title_activity_location"
             android:theme="@style/Theme.PracticaMapas">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.PracticaMapas">
+
         </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="use_you_own_api_key" />
+            android:value="${MAPS_API_KEY}" />
     </application>
 
 </manifest>

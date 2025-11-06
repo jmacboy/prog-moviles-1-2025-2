@@ -139,7 +139,7 @@ fun ComposeMap() {
                         false
 
                     },
-                    icon =  markerIcon
+                   // icon =  markerIcon
                 )
             }
 
