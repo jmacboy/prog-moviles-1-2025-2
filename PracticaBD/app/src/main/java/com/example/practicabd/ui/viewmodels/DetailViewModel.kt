@@ -2,8 +2,10 @@ package com.example.practicabd.ui.viewmodels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.practicabd.bd.entities.Person
 import com.example.practicabd.repositories.PersonRepository
+import kotlinx.coroutines.launch
 
 class DetailViewModel(
     val personId: Int?,
@@ -23,18 +25,17 @@ class DetailViewModel(
         }
     }
 
-    private fun getPersonById(personId: Int) {
+    private fun getPersonById(personId: Int) = viewModelScope.launch {
         val person = repo.getPersonById(personId)
-        if (person == null) return
+        if (person == null) return@launch
         name.value = person.name
         lastName.value = person.lastName
         age.value = person.age.toString()
         city.value = person.city
         birthDate.value = person.birthDate
-
     }
 
-    fun savePerson() {
+    fun savePerson() = viewModelScope.launch {
         if (personId != null) {
             val person = Person(
                 name = name.value,

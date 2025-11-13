@@ -10,17 +10,17 @@ import com.example.practicabd.bd.entities.Person
 @Dao
 interface PersonDao {
     @Query("SELECT * FROM Person")
-    fun getAllPeople(): List<Person>
+    suspend fun getAllPeople(): List<Person>
 
     @Query("SELECT * FROM Person WHERE id = :id")
-    fun getPersonById(id: Int): Person?
+    suspend fun getPersonById(id: Int): Person?
 
     @Insert
-    fun insertPerson(person: Person): Long
+    suspend fun insertPerson(person: Person): Long
 
     @Update
-    fun updatePerson(person: Person)
+    suspend fun updatePerson(person: Person)
 
     @Delete
-    fun deletePerson(person: Person)
+    suspend fun deletePerson(person: Person)
 }

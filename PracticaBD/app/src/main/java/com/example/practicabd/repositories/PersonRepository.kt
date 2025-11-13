@@ -7,35 +7,35 @@ import com.example.practicabd.bd.entities.Person
 class PersonRepository(
     private val context: Context
 ) {
-    fun getAllPeople(): List<Person> {
+    suspend fun getAllPeople(): List<Person> {
         return AppDatabase
             .getInstance(context)
             .personDao()
             .getAllPeople()
     }
 
-    fun getPersonById(id: Int): Person? {
+    suspend fun getPersonById(id: Int): Person? {
         return AppDatabase
             .getInstance(context)
             .personDao()
             .getPersonById(id)
     }
 
-    fun insertPerson(person: Person): Long {
+    suspend fun insertPerson(person: Person): Long {
         return AppDatabase
             .getInstance(context)
             .personDao()
             .insertPerson(person)
     }
 
-    fun deletePerson(person: Person) {
+    suspend fun deletePerson(person: Person) {
         AppDatabase
             .getInstance(context)
             .personDao()
             .deletePerson(person)
     }
 
-    fun updatePerson(person: Person) {
+    suspend fun updatePerson(person: Person) {
         AppDatabase
             .getInstance(context)
             .personDao()

@@ -3,6 +3,7 @@ package com.example.practicacrudlibreria.presentation.home
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -12,8 +13,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -26,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -33,15 +35,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import com.example.practicacrudlibreria.presentation.home.BooksViewModel
 import com.example.practicacrudlibreria.presentation.models.BookUI
 import com.example.practicacrudlibreria.ui.theme.PracticaCrudLibreriaTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BooksScreen(viewModel: BooksViewModel, onItemTap: (BookUI) -> Unit, onTapAdd: () -> Unit, onEdit: (BookUI) -> Unit) {
+fun BooksScreen(
+    viewModel: BooksViewModel,
+    onItemTap: (BookUI) -> Unit,
+    onTapAdd: () -> Unit,
+    onEdit: (BookUI) -> Unit
+) {
 
     Scaffold(
         topBar = {
@@ -58,7 +63,7 @@ fun BooksScreen(viewModel: BooksViewModel, onItemTap: (BookUI) -> Unit, onTapAdd
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            BooksContent(viewModel,onItemTap, onEdit)
+            BooksContent(viewModel, onItemTap, onEdit)
         }
     }
 
@@ -68,25 +73,26 @@ fun BooksScreen(viewModel: BooksViewModel, onItemTap: (BookUI) -> Unit, onTapAdd
 @Composable
 fun BooksContent(viewModel: BooksViewModel, onItemTap: (BookUI) -> Unit, onEdit: (BookUI) -> Unit) {
 
+    LaunchedEffect(Unit) {
+        viewModel.fetchBooks()
+    }
     val books by viewModel.bookList.collectAsState()
-
-    LazyColumn {
-        item {
-            Button(onClick = {
-                viewModel.fetchBooks()
-            }) {
-                Text("get books")
+    val loading by viewModel.loading.collectAsState()
+    if (loading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else {
+        LazyColumn {
+            items(books.size) { index ->
+                BookItem(item = books[index], onItemTap, onDelete = {
+                    viewModel.deleteBook(it)
+                }, onEdit = {
+                    onEdit(it)
+                })
             }
         }
-        items(books.size) { index ->
-            BookItem(item = books[index], onItemTap, onDelete = {
-                viewModel.deleteBook(it)
-            }, onEdit = {
-                onEdit(it)
-            })
-        }
     }
-
 }
 
 

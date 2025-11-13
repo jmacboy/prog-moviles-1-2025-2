@@ -1,5 +1,6 @@
 package com.example.practicacrudlibreria.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.practicacrudlibreria.presentation.models.BookUI
@@ -11,7 +12,8 @@ import kotlinx.coroutines.launch
 
 class BooksViewModel : ViewModel() {
 
-
+    var _loading: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val loading = _loading.asStateFlow()
     var _bookList: MutableStateFlow<List<BookUI>> = MutableStateFlow(emptyList())
     val bookList = _bookList.asStateFlow()
 
@@ -22,14 +24,16 @@ class BooksViewModel : ViewModel() {
 
 
     fun fetchBooks() = viewModelScope.launch {
-
+        _loading.update { true }
         val res = repository.getAllBooks()
         res.fold(
-            onSuccess = {data ->
+            onSuccess = { data ->
                 _bookList.update { data }
+                _loading.update { false }
             },
-            onFailure = {e ->
+            onFailure = { e ->
                 _error.update { e.message }
+                _loading.update { false }
             }
         )
 
